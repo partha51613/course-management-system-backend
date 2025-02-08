@@ -1,6 +1,7 @@
 const mariadb = require("mariadb");
 require("dotenv").config();
 
+
 const pool = mariadb.createPool({
   host: process.env.MDB_HOST,
   user: process.env.MDB_USER,
@@ -9,16 +10,25 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
 });
 
-async function testConnection() {
-  try {
-    const connection = await pool.getConnection();
-    console.log("Connected to MariaDB!");
-    connection.release();
-  } catch (err) {
-    console.error("Database connection failed:", err);
-  }
-}
 
-testConnection();
+pool.getConnection((err, connection) => {
+  if (err) {
+    if (err.code == "PROTOCOL_CONNECTION_LOST") {
+      console.error("Database connection lost")
+    }
+    if (err.code == "ER_CON_COUNT_ERROR") {
+      console.error("Database has too many connections")
+    }
+    if (err.code == "ECONNREFUSED") {
+      console.log("Database connection refused")
+    }
+  }
+  if (connection) {
+    connection.release();
+
+  }
+  return;
+})
 
 module.exports = pool;
+
