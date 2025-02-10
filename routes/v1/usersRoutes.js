@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // GET user by ID
 router.get('/:id', async (req, res) => {
     try {
-        const [user] = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]); // Pass as an array to avoid SQL injection
+        const user = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]); // Pass as an array to avoid SQL injection
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -76,7 +76,7 @@ router.put('/:id', async (req, res) => {
 // DELETE a user
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await db.query('DELETE FROM users WHERE id = ?', [req.params.id]);
+        const result = await db.query('DELETE FROM users WHERE id = ?', [req.params.id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
