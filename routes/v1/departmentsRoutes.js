@@ -5,7 +5,7 @@ const db = require("../../config/db");
 const router = express.Router();
 
 /**
- * @route   GET /departments
+ * @route   GET /api/v1/departments
  * @desc    Get all departments
  * @access  Public
  */
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 });
 
 /**
- * @route   GET /departments/:id
+ * @route   GET /api/v1/departments/:id
  * @desc    Get a department by ID
  * @access  Public
  */
@@ -45,7 +45,7 @@ router.get("/:id", async (req, res) => {
 });
 
 /**
- * @route   POST /departments
+ * @route   POST /api/v1/departments
  * @desc    Create a new department
  * @access  Public
  */
@@ -80,7 +80,7 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * @route   PUT /departments/:id
+ * @route   PUT /api/v1/departments/:id
  * @desc    Update a department
  * @access  Public
  */
@@ -105,7 +105,7 @@ router.put("/:id", async (req, res) => {
 });
 
 /**
- * @route   DELETE /departments/:id
+ * @route   DELETE /api/v1/departments/:id
  * @desc    Delete a department
  * @access  Public
  */
