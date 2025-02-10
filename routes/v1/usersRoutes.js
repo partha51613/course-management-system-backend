@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../../config/db');
+const db = require('../../config/db'); // Import database configuration
 
-
-// GET all users
+/**
+ * GET all users
+ * Endpoint: GET /api/users
+ * Description: Fetches all users from the database
+ */
 router.get('/', async (req, res) => {
     try {
         const users = await db.query('SELECT * FROM users');
@@ -13,25 +16,32 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET user by ID
+/**
+ * GET user by ID
+ * Endpoint: GET /api/users/:id
+ * Description: Fetches a single user by ID
+ */
 router.get('/:id', async (req, res) => {
     try {
-        const user = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]); // Pass as an array to avoid SQL injection
-        if (!user) {
+        const user = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]);
+        if (!user || user.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.json(user); // Return a single object instead of an array
+        res.json(user[0]); // Return a single user object instead of an array
     } catch (err) {
         res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });
 
-
-// POST (Create new user)
+/**
+ * POST (Create a new user)
+ * Endpoint: POST /api/users
+ * Description: Adds a new user to the database
+ */
 router.post('/', async (req, res) => {
     const { name, email, phone, alt_phone, role, gender, bank_name, bank_ac_no, bank_ifsc, bank_address } = req.body;
 
-    //Error Handling
+    // Validate required fields
     if (!name || !email || !phone || !role || !gender || !bank_name || !bank_ac_no || !bank_ifsc || !bank_address) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -42,17 +52,17 @@ router.post('/', async (req, res) => {
             [name, email, phone, alt_phone, role, gender, bank_name, bank_ac_no, bank_ifsc, bank_address]
         );
 
-        // `result.affectedRows` contains the count of updated rows
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'User not found or no changes made' });
-        }
         res.json({ id: result.insertId, message: 'User created successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// PUT (Update a user)
+/**
+ * PUT (Update an existing user)
+ * Endpoint: PUT /api/users/:id
+ * Description: Updates user details based on ID
+ */
 router.put('/:id', async (req, res) => {
     const { name, email, phone, alt_phone, role, gender, bank_name, bank_ac_no, bank_ifsc, bank_address } = req.body;
 
@@ -62,7 +72,6 @@ router.put('/:id', async (req, res) => {
             [name, email, phone, alt_phone, role, gender, bank_name, bank_ac_no, bank_ifsc, bank_address, req.params.id]
         );
 
-        // `result.affectedRows` contains the count of updated rows
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'User not found or no changes made' });
         }
@@ -73,7 +82,11 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETE a user
+/**
+ * DELETE a user
+ * Endpoint: DELETE /api/users/:id
+ * Description: Deletes a user from the database by ID
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const result = await db.query('DELETE FROM users WHERE id = ?', [req.params.id]);
