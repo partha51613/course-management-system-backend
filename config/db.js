@@ -8,6 +8,8 @@ const pool = mariadb.createPool({
   password: process.env.MDB_PASSWORD,
   database: process.env.MDB_DATABASE_NAME,
   connectionLimit: 5,
+  supportBigNumbers: true,
+  bigNumberStrings: true
 });
 
 
