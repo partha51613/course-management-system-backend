@@ -4,7 +4,7 @@ const db = require('../../config/db'); // Import database configuration
 
 /**
  * GET all users
- * Endpoint: GET /api/users
+ * Endpoint: GET /api/v1/users
  * Description: Fetches all users from the database
  */
 router.get('/', async (req, res) => {
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
 /**
  * GET user by ID
- * Endpoint: GET /api/users/:id
+ * Endpoint: GET /api/v1/users/:id
  * Description: Fetches a single user by ID
  */
 router.get('/:id', async (req, res) => {
@@ -35,7 +35,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * POST (Create a new user)
- * Endpoint: POST /api/users
+ * Endpoint: POST /api/v1/users
  * Description: Adds a new user to the database
  */
 router.post('/', async (req, res) => {
@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
 
 /**
  * PUT (Update an existing user)
- * Endpoint: PUT /api/users/:id
+ * Endpoint: PUT /api/v1/users/:id
  * Description: Updates user details based on ID
  */
 router.put('/:id', async (req, res) => {
@@ -84,7 +84,7 @@ router.put('/:id', async (req, res) => {
 
 /**
  * DELETE a user
- * Endpoint: DELETE /api/users/:id
+ * Endpoint: DELETE /api/v1/users/:id
  * Description: Deletes a user from the database by ID
  */
 router.delete('/:id', async (req, res) => {
