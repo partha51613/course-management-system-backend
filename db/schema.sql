@@ -41,3 +41,27 @@ INSERT INTO departments (name, email, phone, type, isActive, createdAt, updatedA
 ('Department of Physics', 'physics@college.edu', '6543210987', 'Department', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('Office of Student Affairs', 'student.affairs@college.edu', '5432109876', 'Others', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    duration_week INT NOT NULL,
+    department_id INT(10) UNSIGNED,
+    isActive BOOLEAN DEFAULT TRUE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL
+);
+
+
+INSERT INTO courses (name, duration_week, department_id, isActive) VALUES
+('Data Structures and Algorithms', 12, 1, TRUE),
+('Machine Learning Fundamentals', 8, 2, TRUE),
+('Thermodynamics and Heat Transfer', 10, 3, FALSE),
+('Structural Analysis and Design', 6, 1, TRUE),
+('Artificial Intelligence and Deep Learning', 15, 4, TRUE),
+('Database Management Systems', 9, 2, FALSE),
+('Embedded Systems and IoT', 7, 3, TRUE),
+('Cybersecurity and Ethical Hacking', 14, 4, TRUE),
+('Renewable Energy Systems', 5, 1, FALSE),
+('Cloud Computing and DevOps', 11, 2, TRUE);
