@@ -9,15 +9,15 @@ const db = require('../../config/db'); // Import database configuration
  */
 
 router.get("/", async (req, res) => {
-    try {
-      const courses = await db.query("SELECT * FROM courses");
-      res.json(courses);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ error: "Internal Server Error", details: err.message });
-    }
-  });
+  try {
+    const courses = await db.query("SELECT * FROM courses");
+    res.json(courses);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: err.message });
+  }
+});
 
 
 /**
@@ -27,21 +27,21 @@ router.get("/", async (req, res) => {
  */
 
 router.get("/:id", async (req, res) => {
-    try {
-        const [courses] = await db.query(
-          "SELECT * FROM courses WHERE id = ?",
-          [req.params.id]
-        ); // Pass as an array to avoid SQL injection
-        if (!courses) {
-          return res.status(404).json({ error: "Course not found" });
-        }
-        res.json(courses); // Return a single object instead of an array
-      } catch (err) {
-        res
-          .status(500)
-          .json({ error: "Internal Server Error", details: err.message });
-      }
-  });
+  try {
+    const [courses] = await db.query(
+      "SELECT * FROM courses WHERE id = ?",
+      [req.params.id]
+    ); // Pass as an array to avoid SQL injection
+    if (!courses) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    res.json(courses); // Return a single object instead of an array
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: err.message });
+  }
+});
 
 /**
  * @route   POST /api/v1/courses
@@ -50,33 +50,33 @@ router.get("/:id", async (req, res) => {
  */
 
 router.post("/", async (req, res) => {
-    const { name, duration_week, department_id } = req.body;
-  
-    if (!name || !duration_week || !department_id) {
+  const { name, duration_week, department_id } = req.body;
+
+  if (!name || !duration_week || !department_id) {
+    return res
+      .status(400)
+      .json({ error: "One of the necessary field is missing" });
+  }
+
+  try {
+    const result = await db.query(
+      "INSERT INTO courses (name, duration_week, department_id) VALUES (?,?,?)",
+      [name, duration_week, department_id]
+    );
+    // `result.affectedRows` contains the count of updated rows
+    if (result.affectedRows === 0) {
       return res
-        .status(400)
-        .json({ error: "One of the necessary field is missing" });
+        .status(404)
+        .json({ error: "Course not found or no changes made" });
     }
-  
-    try {
-      const result = await db.query(
-        "INSERT INTO courses (name, duration_week, department_id) VALUES (?,?,?)",
-        [name, duration_week, department_id]
-      );
-      // `result.affectedRows` contains the count of updated rows
-      if (result.affectedRows === 0) {
-        return res
-          .status(404)
-          .json({ error: "Course not found or no changes made" });
-      }
-      res.json({
-        id: result.insertId,
-        message: "Course created successfully",
-      });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
+    res.json({
+      id: result.insertId,
+      message: "Course created successfully",
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 
@@ -86,32 +86,33 @@ router.post("/", async (req, res) => {
  * @access  Public
  */
 
-  router.put("/:id", async (req, res) => {
-    const { id } = req.params;
-    const { name, duration_week, department_id } = req.body;
+router.put("/:id", async (req, res) => {
+  // const { id } = req.params;
+  const { name, duration_week, department_id } = req.body;
 
-    if (!name || !duration_week || !department_id) {
-        return res.status(400).json({ error: "One of the necessary fields is missing" });
+  if (!name || !duration_week || !department_id) {
+    return res.status(400).json({ error: "One of the necessary fields is missing" });
+  }
+
+  try {
+    const result = await db.query(
+      "UPDATE courses SET name = ?, duration_week = ?, department_id = ? WHERE id = ?",
+      [name, duration_week, department_id, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Course not found or no changes made" });
     }
 
-    try {
-        const result = await db.query(
-            "UPDATE courses SET name = ?, duration_week = ?, department_id = ? WHERE id = ?",
-            [name, duration_week, department_id, id]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "Course not found or no changes made" });
-        }
-
-        res.json({ message: "Course updated successfully" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    res.json({ message: "Course updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
+
 /**
- * @route   PUT /api/v1/courses/:id
+ * @route   DELETE /api/v1/courses/:id
  * @desc    Delete a department
  * @access  Public
  */
@@ -120,15 +121,15 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-      const result = await db.query("DELETE FROM courses WHERE id = ?", [id]);
+    const result = await db.query("DELETE FROM courses WHERE id = ?", [id]);
 
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ error: "Course not found" });
-      }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
 
-      res.json({ message: "Course deleted successfully" });
+    res.json({ message: "Course deleted successfully" });
   } catch (err) {
-      res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 

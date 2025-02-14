@@ -10,19 +10,15 @@ const usersRoutes = require('./usersRoutes'); // Import users API
 router.use('/users', usersRoutes);   // /api/v1/users
 
 //Departments Routes
-const departmentsRoutes = require("./departmentsRoutes")
+const departmentsRoutes = require("./departmentsRoutes");
 router.use('/departments', departmentsRoutes);   // /api/v1/departments
 
 //Courses Routes
-const coursesRoutes = require("./coursesRoutes")
+const coursesRoutes = require("./coursesRoutes");
 router.use('/courses', coursesRoutes);   // /api/v1/departments
 
-
-/*
-* TO DO 
-* Course Table Routes
-* 
-*/
-
+// Course_Sessions Routes
+const courseSessionRoutes = require("./courseSessionRoutes");
+router.use('/course-sessions', courseSessionRoutes)
 
 module.exports = router;
