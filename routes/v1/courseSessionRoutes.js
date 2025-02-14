@@ -7,31 +7,34 @@ const router = express.Router();
  * @desc    Get all course sessions
  * @access  Public
  */
-router.get('/', async (req, res) => {
-    try {
-        const [result] = await db.query("SELECT * FROM course_sessions");
 
-        if (result.length === 0) {
+router.get("/", async (req, res) => {
+    try {
+        const result = await db.query("SELECT * FROM course_sessions");
+
+        // Ensure result is an array and check if it's empty
+        if (!result || result.length === 0) {
             return res.status(200).json({
                 message: "No course sessions found",
-                data: []
+                data: [],
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Course sessions retrieved successfully",
-            data: result
+            data: result, // Returning all course sessions
         });
 
     } catch (err) {
         console.error("Error fetching course sessions:", err);
-        res.status(500).json({
+        return res.status(500).json({
             error: "Internal Server Error",
             message: "Could not retrieve course sessions",
-            details: err.message
+            details: err.message, // Include detailed error message for debugging
         });
     }
 });
+
 
 
 /**
@@ -39,9 +42,10 @@ router.get('/', async (req, res) => {
  * @desc    Get a specific course session by ID
  * @access  Public
  */
+
 router.get("/:id", async (req, res) => {
     try {
-        const [result] = await db.query(
+        const result = await db.query(
             "SELECT * FROM course_sessions WHERE id = ?",
             [req.params.id]
         );
@@ -74,6 +78,7 @@ router.get("/:id", async (req, res) => {
  * @desc    Create a new course session
  * @access  Public
  */
+
 router.post('/', async (req, res) => {
     const { course_id, session_name, run_type } = req.body;
 
@@ -87,7 +92,7 @@ router.post('/', async (req, res) => {
 
     try {
         // Insert into database
-        const [result] = await db.query(
+        const result = await db.query(
             "INSERT INTO course_sessions (course_id, session_name, run_type) VALUES (?, ?, ?)",
             [course_id, session_name, run_type]
         );
@@ -120,6 +125,7 @@ router.post('/', async (req, res) => {
  * @desc    Update a course session
  * @access  Public
  */
+
 router.put('/:id', async (req, res) => {
     const { course_id, session_name, run_type } = req.body;
 
@@ -133,7 +139,7 @@ router.put('/:id', async (req, res) => {
 
     try {
         // Update the course session
-        const [result] = await db.query(
+        const result = await db.query(
             "UPDATE course_sessions SET course_id = ?, session_name = ?, run_type = ? WHERE id = ?",
             [course_id, session_name, run_type, req.params.id]
         );
@@ -174,6 +180,7 @@ router.put('/:id', async (req, res) => {
  * @desc    Delete a course session by ID
  * @access  Public
  */
+
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
 
