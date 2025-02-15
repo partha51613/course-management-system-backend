@@ -55,7 +55,7 @@ router.get("/:id", async (req, res) => {
 
     res.status(200).json({
       message: "Department retrieved successfully",
-      data: result[0], // Return a single object
+      data: result, // Return a single object
     });
   } catch (err) {
     console.error("Error fetching department:", err);
