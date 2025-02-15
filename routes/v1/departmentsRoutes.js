@@ -12,14 +12,29 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const departments = await db.query("SELECT * FROM departments");
-    res.json(departments);
+    const result = await db.query("SELECT * FROM departments");
+
+    if (!result || result.length === 0) {
+      return res.status(200).json({
+        message: "No departments found",
+        data: [],
+      });
+    }
+
+    res.status(200).json({
+      message: "Departments retrieved successfully",
+      data: result,
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: err.message });
+    console.error("Error fetching departments:", err);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "Could not retrieve departments",
+      details: err.message,
+    });
   }
 });
+
 
 /**
  * @route   GET /api/v1/departments/:id
@@ -29,20 +44,29 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const [department] = await db.query(
+    const result = await db.query(
       "SELECT * FROM departments WHERE id = ?",
       [req.params.id]
-    ); // Pass as an array to avoid SQL injection
-    if (!department) {
-      return res.status(404).json({ error: "User not found" });
+    );
+
+    if (!result || result.length === 0) {
+      return res.status(404).json({ error: "Department not found" });
     }
-    res.json(department); // Return a single object instead of an array
+
+    res.status(200).json({
+      message: "Department retrieved successfully",
+      data: result, // Return a single object
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: err.message });
+    console.error("Error fetching department:", err);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "Could not retrieve department",
+      details: err.message,
+    });
   }
 });
+
 
 /**
  * @route   POST /api/v1/departments
@@ -84,41 +108,72 @@ router.post("/", async (req, res) => {
  * @desc    Update a department
  * @access  Public
  */
+
 router.put("/:id", async (req, res) => {
+  const { id } = req.params;
   const { name, email, phone, type } = req.body;
+
+  // Validate required fields
+  if (!name || !email || !phone || !type) {
+    return res.status(400).json({ error: "Missing required fields: name, email, phone, and type" });
+  }
+
   try {
     const result = await db.query(
-      "UPDATE departments SET name=?, email=?, phone=?, type=? WHERE id = ?",
-      [name, email, phone, type, req.params.id]
+      "UPDATE departments SET name = ?, email = ?, phone = ?, type = ? WHERE id = ?",
+      [name, email, phone, type, id]
     );
 
-    // `result.affectedRows` contains the count of updated rows
+    // Check if any rows were updated
     if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ error: "Department not found or no changes made" });
+      return res.status(404).json({ error: "Department not found or no changes made" });
     }
-    res.json({ message: "Department updated successfully" });
+
+    return res.status(200).json({ message: "Department updated successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error updating department:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: "Could not update department",
+      details: err.message,
+    });
   }
 });
+
 
 /**
  * @route   DELETE /api/v1/departments/:id
  * @desc    Delete a department
  * @access  Public
  */
-router.delete('/:id', async (req, res) => {
-    try {
-        const result = await db.query('DELETE FROM departments WHERE id = ?', [req.params.id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Department not found' });
-        }
-        res.json({ message: 'Department deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ID
+    if (!id) {
+      return res.status(400).json({ error: "Department ID is required" });
     }
+
+    // Delete the department
+    const result = await db.query("DELETE FROM departments WHERE id = ?", [id]);
+
+    // Check if deletion was successful
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Department not found" });
+    }
+
+    res.status(200).json({ message: "Department deleted successfully" });
+
+  } catch (err) {
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "Could not delete department",
+      details: err.message,
+    });
+  }
 });
+
 
 module.exports = router;
