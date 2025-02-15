@@ -37,13 +37,27 @@ CREATE TABLE courses (
     FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL
 );
 
+--  OLD QUERY, delete when not requiured
+-- CREATE TABLE course_sessions (
+--     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+--     course_id INT UNSIGNED NOT NULL,
+--     session_name VARCHAR(20) NOT NULL,  
+--     run_type ENUM('NEW', 'REPEAT', 'RERUN') NOT NULL,
+--     FOREIGN KEY (course_id) REFERENCES courses(id) ON UPDATE CASCADE,
+--     CONSTRAINT unique_course_session UNIQUE (course_id, session_name)
+-- );
+
 CREATE TABLE course_sessions (
-    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id INT UNSIGNED NOT NULL,
     session_name VARCHAR(20) NOT NULL,  
     run_type ENUM('NEW', 'REPEAT', 'RERUN') NOT NULL,
+    CONSTRAINT unique_course_session UNIQUE (course_id, session_name),
     FOREIGN KEY (course_id) REFERENCES courses(id) ON UPDATE CASCADE
 );
+
+
+
 
 CREATE TABLE session_honorarium (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
