@@ -24,5 +24,5 @@ app.use("/api/v1", apiV1Routes); // All v1 routes are prefixed with /api/v1
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
