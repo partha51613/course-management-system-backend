@@ -11,7 +11,6 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-
 /**
  * Send OTP via Email
  */
@@ -88,5 +87,13 @@ exports.verifyOTP = (req, res) => {
       expiresIn: "1h", // Token expires in 1 hour
     }
   );
+  
+  // Set Cookie
+  res.cookie("token", token, {
+    httpOnly: true, // Prevents access from JavaScript
+    secure: false, // Set to `true` in production (only allows HTTPS)
+    sameSite: "strict", // CSRF protection
+    maxAge: 3600000, // 1 hour expiration
+  });
   res.json({ message: "Login successful", token });
 };
