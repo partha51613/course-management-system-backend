@@ -7,10 +7,13 @@ function authenticateToken(req, res, next) {
     if (!token) return res.status(401).json({ message: "Access Denied" });
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ message: "Invalid Token" });
-
+        if (err) {
+            return res.status(403).json({ message: "Invalid Token" });
+        }
+        else{
+            next();
+        }
     });
-    next();
 }
 
 module.exports = authenticateToken;
