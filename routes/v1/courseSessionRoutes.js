@@ -1,6 +1,9 @@
 const express = require("express");
 const db = require("../../config/db");
 const router = express.Router();
+//Enable Route Authorization
+// const validateAuthToken = require("../../middlewares/validateAuthToken")
+// router.use(validateAuthToken)
 
 /**
  * @route   GET /api/v1/course-sessions
@@ -199,7 +202,6 @@ router.delete("/:id", async (req, res) => {
             id // Wrap in array to prevent SQL injection
         );
 
-        console.log("RES VAL" + JSON.stringify(result))
         // Check if the course session exists
         if (result.affectedRows === 0) {
             return res.status(404).json({
@@ -207,8 +209,6 @@ router.delete("/:id", async (req, res) => {
                 message: `No course session found with ID ${id}`
             });
         }
-
-        console.log(`Course session with ID ${id} deleted successfully`);
 
         // Return success response
         return res.status(200).json({

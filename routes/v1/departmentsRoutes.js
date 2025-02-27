@@ -1,8 +1,10 @@
 const express = require("express");
 const db = require("../../config/db");
-
-// Create a Router for /departments
 const router = express.Router();
+//Enable Route Authorization
+// const validateAuthToken = require("../../middlewares/validateAuthToken")
+// router.use(validateAuthToken)
+
 
 /**
  * @route   GET /api/v1/departments

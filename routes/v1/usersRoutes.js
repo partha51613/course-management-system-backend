@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../config/db'); // Import database configuration
+//Enable Route Authorization
+// const validateAuthToken = require("../../middlewares/validateAuthToken")
+// router.use(validateAuthToken)
 
 /**
  * GET all users
