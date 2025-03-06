@@ -20,7 +20,7 @@ const db = require('../../config/db'); // Import database configuration
 router.get("/", async (req, res) => {
   try {
 
-    const rows = await db.query("SELECT * FROM courses");
+    const rows = await db.query("SELECT c.name AS course_name, u.name AS sme_name FROM cmp_backend.courses c LEFT OUTER JOIN cmp_backend.users u ON c.sme_id = u.id ");
 
     // Check if courses exist
     if (rows.length === 0) {
