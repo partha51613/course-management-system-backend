@@ -11,7 +11,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware setup
-app.use(cors()); // Enable CORS for cross-origin requests
+app.use(cors({
+  origin: 'http://localhost:4200',  // Set this to your Angular frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true  // Allow cookies and authentication headers
+}));
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser());
 
