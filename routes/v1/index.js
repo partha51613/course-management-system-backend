@@ -15,7 +15,7 @@ router.use('/departments', departmentsRoutes);   // /api/v1/departments
 
 // Courses Routes
 const coursesRoutes = require("./coursesRoutes");
-router.use('/courses', coursesRoutes);   // /api/v1/departments
+router.use('/courses', coursesRoutes);   // /api/v1/courses
 
 // Course_Sessions Routes
 const courseSessionRoutes = require("./courseSessionRoutes");
