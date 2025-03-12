@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../config/db'); // Import database configuration
+const dotenv = require('dotenv')
+dotenv.config();
 //Enable Route Authorization
 // const validateAuthToken = require("../../middlewares/validateAuthToken")
 // router.use(validateAuthToken)
@@ -20,7 +22,7 @@ const db = require('../../config/db'); // Import database configuration
 router.get("/", async (req, res) => {
   try {
 
-    const rows = await db.query("SELECT c.name AS course_name, u.name AS sme_name FROM cmp_backend.courses c LEFT OUTER JOIN cmp_backend.users u ON c.sme_id = u.id ");
+    const rows = await db.query(`SELECT c.name AS course_name, u.name AS sme_name FROM ${process.env.MDB_DATABASE_NAME}.courses c LEFT OUTER JOIN ${process.env.MDB_DATABASE_NAME}.users u ON c.sme_id = u.id`);
 
     // Check if courses exist
     if (rows.length === 0) {
