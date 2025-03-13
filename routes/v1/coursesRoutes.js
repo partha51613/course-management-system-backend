@@ -22,7 +22,8 @@ dotenv.config();
 router.get("/", async (req, res) => {
   try {
 
-    const rows = await db.query(`SELECT c.name AS course_name, u.name AS sme_name FROM ${process.env.MDB_DATABASE_NAME}.courses c LEFT OUTER JOIN ${process.env.MDB_DATABASE_NAME}.users u ON c.sme_id = u.id`);
+    const rows = await db.query(`SELECT c.name AS course_name,c.duration_week AS duration_week, d.name AS department, u.name AS sme_name FROM ${process.env.MDB_DATABASE_NAME}.courses c LEFT OUTER JOIN ${process.env.MDB_DATABASE_NAME}.users u ON c.sme_id = u.id LEFT OUTER JOIN ${process.env.MDB_DATABASE_NAME}.departments d ON c.department_id = d.id
+    `);
 
     // Check if courses exist
     if (rows.length === 0) {
