@@ -35,6 +35,12 @@ router.get("/", async (req, res) => {
       [parseInt(limit), parseInt(offset)]  // <-- Fixed this
     );
 
+    // Fetch total count of courses
+    const rowCountResult = await db.query(`SELECT COUNT(*) AS total FROM ${process.env.MDB_DATABASE_NAME}.courses`);
+
+    // Extract the total count
+    const totalCount = rowCountResult[0]?.total || 0;  // Ensure a valid number
+
 
     // Check if courses exist
     if (rows.length === 0) {
@@ -48,6 +54,7 @@ router.get("/", async (req, res) => {
     return res.status(200).json({
       message: "Courses retrieved successfully",
       data: rows,
+      totalCount: totalCount
     });
 
   } catch (err) {
