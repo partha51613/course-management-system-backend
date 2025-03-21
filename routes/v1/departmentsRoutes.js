@@ -16,10 +16,17 @@ router.get("/", async (req, res) => {
   try {
     const result = await db.query("SELECT * FROM departments");
 
+    // Fetch total count of departments
+    const rowCountResult = await db.query(`SELECT COUNT(*) AS total FROM ${process.env.MDB_DATABASE_NAME}.departments`);
+
+    // Extract the total count
+    const totalCount = rowCountResult[0]?.total || 0;  // Ensure a valid number
+
     if (!result || result.length === 0) {
       return res.status(200).json({
         message: "No departments found",
         data: [],
+        totalCount: totalCount
       });
     }
 
