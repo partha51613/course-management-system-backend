@@ -31,11 +31,14 @@ CREATE TABLE courses (
     name VARCHAR(255) NOT NULL,
     duration_week INT UNSIGNED NOT NULL,
     department_id INT UNSIGNED,
+    sme_id INT(10) UNSIGNED NULL,
     isActive BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL
+    FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL,
+    FOREIGN KEY (sme_id) REFERENCES sme(id) ON DELETE SET NULL
 );
+
 
 --  OLD QUERY, delete when not requiured
 -- CREATE TABLE course_sessions (
