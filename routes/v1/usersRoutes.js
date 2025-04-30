@@ -12,8 +12,16 @@ const db = require('../../config/db'); // Import database configuration
  */
 
 router.get("/", async (req, res) => {
+
+    const { limit, offset } = req.query;
+    console.log("REQ QUERY IS " +JSON.stringify("Adad" +req.query))
+
+    // if (isNaN(limitInt) || isNaN(offsetInt)) {
+    //     throw new Error('Invalid limit or offset');
+    // }
+
     try {
-        const result = await db.query("SELECT * FROM users");
+        const result = await db.query(`SELECT * FROM users LIMIT ${limit} OFFSET ${offset}`);
 
         // Fetch total count of departments
         const rowCountResult = await db.query(`SELECT COUNT(*) AS total FROM ${process.env.MDB_DATABASE_NAME}.users`);
