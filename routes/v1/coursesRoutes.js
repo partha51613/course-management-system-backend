@@ -22,8 +22,7 @@ dotenv.config();
 router.get("/", async (req, res) => {
 
   const { limit, offset } = req.query;
-
-  console.log("REQ QUERY IS " +JSON.stringify(req.query))
+  
   try {
 
     const rows = await db.query(
